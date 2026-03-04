@@ -39,13 +39,13 @@ jobs:
       - name: Show gh-aw version
         run: |
           set -euo pipefail
-          gh aw version
+          gh-aw version
 
       - name: Validate and compile workflows
         run: |
           set -euo pipefail
-          gh aw validate
-          gh aw compile
+          gh-aw validate
+          gh-aw compile
 
       - name: Verify lockfiles are up to date
         run: |

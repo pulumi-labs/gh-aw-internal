@@ -38,38 +38,38 @@ Version source of truth is `GH_AW_VERSION` in `mise.toml`.
 1. Initialize gh-aw in the target repo:
 
 ```bash
-gh aw init
+gh-aw init
 ```
 
 2. Add workflows from this repo:
 
 ```bash
-gh aw add pulumi-labs/gh-aw-internal/gh-aw-pr-review@main
-gh aw add pulumi-labs/gh-aw-internal/gh-aw-pr-rereview@main
+gh-aw add pulumi-labs/gh-aw-internal/gh-aw-pr-review@main
+gh-aw add pulumi-labs/gh-aw-internal/gh-aw-pr-rereview@main
 ```
 
 3. Compile and commit:
 
 ```bash
-gh aw compile
+gh-aw compile
 git add .github/workflows .gitattributes
 git commit -m "Add shared PR review workflows"
 ```
 
 ## Update In Consumer Repos
 
-If workflows were added via `gh aw add`, use:
+If workflows were added via `gh-aw add`, use:
 
 ```bash
-gh aw update
+gh-aw update
 ```
 
 Common variants:
 
 ```bash
-gh aw update gh-aw-pr-review
-gh aw update --create-pull-request
-gh aw update --no-merge
+gh-aw update gh-aw-pr-review
+gh-aw update --create-pull-request
+gh-aw update --no-merge
 ```
 
 ## Maintain This Repo
@@ -78,7 +78,7 @@ Typical workflow when changing shared snippet logic:
 
 1. Update `.github/snippets/code-review.md` (and `.github/agents/code-review.md` if needed).
 2. Commit and push to `main`.
-3. Update consumers via `gh aw update`.
+3. Update consumers via `gh-aw update`.
 
 Note: consumers compile against remote refs. If an import points at `@main`, the referenced file must already exist on GitHub before consumer compile succeeds.
 
@@ -114,14 +114,14 @@ Recommended CI install pattern (single source of truth from `mise.toml`):
 Then validate:
 
 ```bash
-gh aw validate
+gh-aw validate
 ```
 
 For repo-wide upgrades:
 
 ```bash
 gh extension upgrade gh-aw
-gh aw upgrade
+gh-aw upgrade
 ```
 
 ## References
