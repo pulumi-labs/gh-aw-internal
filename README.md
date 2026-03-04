@@ -97,31 +97,19 @@ Recommended path:
 
 `.lock.yml` output can change across `gh-aw` versions. If CI recompiles workflows, pin the same gh-aw version in CI and local workflows to avoid false diffs.
 
-Example GitHub Actions step:
+Recommended CI install pattern (single source of truth from `mise.toml`):
 
 ```yaml
-- name: Install gh-aw
-  uses: github/gh-aw/actions/setup-cli@main
+- name: Checkout
+  uses: actions/checkout@v4
+
+- name: Install tools via mise
+  uses: jdx/mise-action@v3
   with:
-    version: v0.53.1
+    install: true
 ```
 
-You can also read the version from `mise.toml` in CI to keep a single source of truth:
-
-```yaml
-- name: Read gh-aw version from mise.toml
-  id: aw-version
-  run: |
-    set -euo pipefail
-    version=$(awk -F'"' '/^GH_AW_VERSION = / {print $2}' mise.toml)
-    test -n "$version"
-    echo "version=$version" >> "$GITHUB_OUTPUT"
-
-- name: Install gh-aw
-  uses: github/gh-aw/actions/setup-cli@main
-  with:
-    version: ${{ steps.aw-version.outputs.version }}
-```
+`jdx/mise-action` reads `mise.toml`, so CI and local use the same pinned `github:github/gh-aw` version.
 
 Then validate:
 
@@ -144,4 +132,4 @@ gh aw upgrade
 - Reusing workflows/imports: https://github.github.com/gh-aw/guides/packaging-imports/
 - Upgrading workflows: https://github.github.com/gh-aw/guides/upgrading/
 - How lock files work: https://github.github.com/gh-aw/introduction/how-they-work/
-- setup-cli action: https://github.com/github/gh-aw/tree/main/actions/setup-cli
+- mise action: https://mise.jdx.dev/ci/github-action.html
