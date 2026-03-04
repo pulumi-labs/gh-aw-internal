@@ -12,7 +12,7 @@ on:
         required: true
         type: string
 imports:
-  - ../snippets/code-review.md
+  - pulumi-labs/gh-aw-internal/.github/snippets/code-review.md@main
 permissions:
   contents: read
   pull-requests: read
@@ -64,7 +64,7 @@ safe-outputs:
 # Internal Trusted PR Reviewer
 
 Review pull request #${{ github.event.pull_request.number || github.event.inputs.pr_number }} in repository `${{ github.repository }}`.
-This workflow imports `../snippets/code-review.md` for the baseline review rubric.
+This workflow imports `pulumi-labs/gh-aw-internal/.github/snippets/code-review.md@main` for the baseline review rubric.
 
 ## Trust Model
 
