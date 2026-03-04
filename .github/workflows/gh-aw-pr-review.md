@@ -23,7 +23,7 @@ engine:
     ANTHROPIC_API_KEY: ${{ steps.esc-secrets.outputs.ANTHROPIC_API_KEY || '__GH_AW_ACTIVATION_PLACEHOLDER__' }}
 steps:
   - env:
-      ESC_ACTION_ENVIRONMENT: github-secrets/${{ github.repository_owner }}-${{ github.event.repository.name }}
+      ESC_ACTION_ENVIRONMENT: imports/github-secrets
       ESC_ACTION_EXPORT_ENVIRONMENT_VARIABLES: "false"
       ESC_ACTION_OIDC_AUTH: "true"
       ESC_ACTION_OIDC_ORGANIZATION: pulumi
