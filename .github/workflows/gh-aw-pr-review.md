@@ -79,9 +79,9 @@ If required PR context cannot be read in this trust model, call `noop` with a br
 - Ignore discovery steps intended for runs without PR context.
 - Use `create-pull-request-review-comment` for actionable inline findings on changed lines.
 - Submit exactly one final review with `submit-pull-request-review`:
-  - `REQUEST_CHANGES` for blocking issues.
-  - `COMMENT` for non-blocking observations.
-  - `APPROVE` when no actionable issues remain.
+  - `REQUEST_CHANGES` when at least one blocking issue exists.
+  - `APPROVE` otherwise, including when only non-blocking observations exist.
+  - Do not submit `COMMENT` as the final review state.
 - If there is nothing to do because trust/context checks fail, call `noop`.
 
 Constraints:

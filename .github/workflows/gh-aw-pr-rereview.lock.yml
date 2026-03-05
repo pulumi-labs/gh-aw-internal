@@ -25,9 +25,9 @@
 #
 # Resolved workflow manifest:
 #   Imports:
-#     - ../snippets/code-review.md
+#     - pulumi-labs/gh-aw-internal/.github/snippets/code-review.md@main
 #
-# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"f78946b4b50288ee71c755b01b765663c99d2a998b5d57d2b56ac7ae8b440a52","compiler_version":"v0.53.1"}
+# gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"be6dc5dd4b44a39d935611ce3e87eaaf3ebe641dfbbf46af06f8a45780b98be5","compiler_version":"v0.53.1"}
 
 name: "Internal PR Re-Review (Slash Command)"
 "on":
@@ -207,7 +207,7 @@ jobs:
           </system>
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF'
-          {{#runtime-import .github/snippets/code-review.md}}
+          {{#runtime-import .github/aw/imports/pulumi-labs/gh-aw-internal/41c36433320e2e0bc933ed57d08eae0805faf546/.github_snippets_code-review.md}}
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF'
           {{#runtime-import .github/workflows/gh-aw-pr-rereview.md}}
@@ -320,7 +320,7 @@ jobs:
       - name: Create gh-aw temp directory
         run: bash /opt/gh-aw/actions/create_gh_aw_tmp_dir.sh
       - env:
-          ESC_ACTION_ENVIRONMENT: github-secrets/${{ github.repository_owner }}-${{ github.event.repository.name }}
+          ESC_ACTION_ENVIRONMENT: imports/github-secrets
           ESC_ACTION_EXPORT_ENVIRONMENT_VARIABLES: "false"
           ESC_ACTION_OIDC_AUTH: "true"
           ESC_ACTION_OIDC_ORGANIZATION: pulumi
