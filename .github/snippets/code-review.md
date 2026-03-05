@@ -20,6 +20,6 @@ Commenting rules:
 Final action:
 - Submit exactly one final review:
   - `REQUEST_CHANGES` when at least one blocking issue exists.
-  - `COMMENT` when only non-blocking issues exist.
-  - `APPROVE` when no actionable issues remain.
+  - `APPROVE` otherwise, including when only non-blocking observations exist.
+  - Do not submit `COMMENT` as the final review state.
 - If PR context cannot be read, call `noop` with a brief reason.
