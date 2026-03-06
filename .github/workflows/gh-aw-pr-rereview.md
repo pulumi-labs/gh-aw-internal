@@ -76,9 +76,9 @@ This workflow imports `pulumi-labs/gh-aw-internal/.github/snippets/code-review.m
 - Use that PR number for all review operations in this run.
 - Use `create-pull-request-review-comment` for actionable inline findings on changed lines.
 - Submit exactly one final review with `submit-pull-request-review`:
-  - `REQUEST_CHANGES` for blocking issues.
-  - `COMMENT` for non-blocking observations.
-  - `APPROVE` when no actionable issues remain.
+  - `REQUEST_CHANGES` when at least one blocking issue exists.
+  - `APPROVE` otherwise, including when only non-blocking observations exist.
+  - Do not submit `COMMENT` as the final review state.
 - If required PR context is missing, call `noop`.
 
 Constraints:
