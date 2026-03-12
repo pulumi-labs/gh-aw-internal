@@ -6,13 +6,17 @@ Shared internal GitHub Agentic Workflow templates for Pulumi Labs.
 
 - `.github/workflows/gh-aw-pr-review.md`
 - `.github/workflows/gh-aw-pr-rereview.md`
-- `.github/snippets/code-review.md`
-- `.github/agents/code-review.md`
+- `.github/workflows/shared/review.md`
+- `.github/workflows/shared/plugins/code-review/code-review.md`
 - `mise.toml` (pinned `gh-aw` tooling for local use)
 
-Workflows import the shared review rubric from:
+The review workflows import the shared review contract from:
 
-`pulumi-labs/gh-aw-internal/.github/snippets/code-review.md@main`
+`shared/review.md`
+
+That shared workflow, in turn, imports the detailed reviewer prompt from:
+
+`shared/plugins/code-review/code-review.md`
 
 ## Local Tooling (mise)
 
@@ -44,8 +48,8 @@ gh-aw init
 2. Add workflows from this repo:
 
 ```bash
-gh-aw add pulumi-labs/gh-aw-internal/gh-aw-pr-review@main
-gh-aw add pulumi-labs/gh-aw-internal/gh-aw-pr-rereview@main
+gh-aw add pulumi-labs/gh-aw-internal/.github/workflows/gh-aw-pr-review.md@main
+gh-aw add pulumi-labs/gh-aw-internal/.github/workflows/gh-aw-pr-rereview.md@main
 ```
 
 3. Compile and commit:
@@ -74,13 +78,25 @@ gh-aw update --no-merge
 
 ## Maintain This Repo
 
-Typical workflow when changing shared snippet logic:
+Typical workflow when changing review behavior:
 
-1. Update `.github/snippets/code-review.md` (and `.github/agents/code-review.md` if needed).
-2. Commit and push to `main`.
-3. Update consumers via `gh-aw update`.
+1. Update `.github/workflows/shared/review.md` for shared workflow contract changes.
+2. Update `.github/workflows/shared/plugins/code-review/code-review.md` for reviewer behavior changes.
+3. Recompile the workflow lock files.
+4. Update consumers via `gh-aw update`.
+
+Legacy helper files may still exist in `.github/snippets/` or `.github/agents/`, but the review workflows on this branch are driven by the shared workflow files above.
+
+For installable top-level workflows, prefer explicitly listing every required shared import in the top-level workflow's `imports:` block. Do not rely on recursive import fetching in consumer repos for critical prompt dependencies.
 
 Note: consumers compile against remote refs. If an import points at `@main`, the referenced file must already exist on GitHub before consumer compile succeeds.
+
+## Adding Future Workflows
+
+- If the workflow should run in this repo, add it under `.github/workflows/`.
+- If the change is a reusable component or prompt fragment, add it under `.github/workflows/shared/`.
+- If the workflow is only a building block with no trigger of its own, keep it as a shared file without an `on:` field.
+- If a future standalone workflow should be installable by other repos but should not run in this repo, do not add it as a normal top-level workflow here without first deciding on a packaging strategy. This repo currently treats `.github/workflows/` as the canonical in-repo runtime location.
 
 ## Versioning Strategy
 

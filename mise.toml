@@ -1,8 +1,5 @@
-[env]
-GH_AW_VERSION = "0.53.1"
-
 [tools."github:github/gh-aw"]
-version = "0.53.1"
+version = "0.57.2"
 bin = "gh-aw"
 
 [tasks.aw-version]
