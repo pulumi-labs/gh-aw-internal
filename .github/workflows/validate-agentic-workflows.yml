@@ -5,8 +5,7 @@ on:
     paths:
       - '.github/workflows/*.md'
       - '.github/workflows/*.lock.yml'
-      - '.github/agents/*.md'
-      - '.github/snippets/*.md'
+      - '.github/workflows/shared/**/*.md'
       - '.github/aw/actions-lock.json'
       - '.gitattributes'
       - 'mise.toml'
@@ -17,8 +16,7 @@ on:
     paths:
       - '.github/workflows/*.md'
       - '.github/workflows/*.lock.yml'
-      - '.github/agents/*.md'
-      - '.github/snippets/*.md'
+      - '.github/workflows/shared/**/*.md'
       - '.github/aw/actions-lock.json'
       - '.gitattributes'
       - 'mise.toml'
