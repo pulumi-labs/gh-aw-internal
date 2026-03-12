@@ -1,6 +1,4 @@
 ---
-imports:
-  - shared/plugins/code-review/code-review.md
 permissions:
   contents: read
   pull-requests: read

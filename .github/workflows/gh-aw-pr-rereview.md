@@ -8,6 +8,7 @@ on:
     events: [pull_request_comment, pull_request_review_comment]
 imports:
   - shared/review.md
+  - shared/plugins/code-review/code-review.md
 permissions:
   contents: read
   pull-requests: read

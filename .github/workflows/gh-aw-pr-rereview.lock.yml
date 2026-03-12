@@ -28,7 +28,7 @@
 #     - shared/plugins/code-review/code-review.md
 #     - shared/review.md
 #
-# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"342922a8a213decabbe36428b8591fddbb6ee4cbe1f44e4599f45b368f388f5f","compiler_version":"v0.57.2","strict":true}
+# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"424d4808de2ae14855fb6a2438dd23664f3160cae87c056a333e7ac5f9808d94","compiler_version":"v0.57.2","strict":true}
 
 name: "Internal PR Re-Review (Slash Command)"
 "on":

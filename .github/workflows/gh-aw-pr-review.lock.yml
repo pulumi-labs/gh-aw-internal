@@ -28,7 +28,7 @@
 #     - shared/plugins/code-review/code-review.md
 #     - shared/review.md
 #
-# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"0aa77dac78f8d973dab5b0cc527d824556dad8b189ba11440efa723ab16dd4ee","compiler_version":"v0.57.2","strict":true}
+# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"28faa143c16db17c4419ae66d021440c32fd609933add08b7edef6691914e1bf","compiler_version":"v0.57.2","strict":true}
 
 name: "Internal Trusted PR Reviewer"
 "on":

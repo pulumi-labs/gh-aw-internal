@@ -87,6 +87,8 @@ Typical workflow when changing review behavior:
 
 Legacy helper files may still exist in `.github/snippets/` or `.github/agents/`, but the review workflows on this branch are driven by the shared workflow files above.
 
+For installable top-level workflows, prefer explicitly listing every required shared import in the top-level workflow's `imports:` block. Do not rely on recursive import fetching in consumer repos for critical prompt dependencies.
+
 Note: consumers compile against remote refs. If an import points at `@main`, the referenced file must already exist on GitHub before consumer compile succeeds.
 
 ## Adding Future Workflows

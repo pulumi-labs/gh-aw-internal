@@ -17,6 +17,7 @@ on:
         type: string
 imports:
   - shared/review.md
+  - shared/plugins/code-review/code-review.md
 ---
 
 # Internal Trusted PR Reviewer
