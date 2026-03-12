@@ -6,13 +6,17 @@ Shared internal GitHub Agentic Workflow templates for Pulumi Labs.
 
 - `.github/workflows/gh-aw-pr-review.md`
 - `.github/workflows/gh-aw-pr-rereview.md`
-- `.github/snippets/code-review.md`
-- `.github/agents/code-review.md`
+- `.github/workflows/shared/review.md`
+- `.github/workflows/shared/plugins/code-review/code-review.md`
 - `mise.toml` (pinned `gh-aw` tooling for local use)
 
-Workflows import the shared review rubric from:
+The review workflows import the shared review contract from:
 
-`pulumi-labs/gh-aw-internal/.github/snippets/code-review.md@main`
+`shared/review.md`
+
+That shared workflow, in turn, imports the detailed reviewer prompt from:
+
+`shared/plugins/code-review/code-review.md`
 
 ## Local Tooling (mise)
 
@@ -74,11 +78,14 @@ gh-aw update --no-merge
 
 ## Maintain This Repo
 
-Typical workflow when changing shared snippet logic:
+Typical workflow when changing review behavior:
 
-1. Update `.github/snippets/code-review.md` (and `.github/agents/code-review.md` if needed).
-2. Commit and push to `main`.
-3. Update consumers via `gh-aw update`.
+1. Update `.github/workflows/shared/review.md` for shared workflow contract changes.
+2. Update `.github/workflows/shared/plugins/code-review/code-review.md` for reviewer behavior changes.
+3. Recompile the workflow lock files.
+4. Update consumers via `gh-aw update`.
+
+Legacy helper files may still exist in `.github/snippets/` or `.github/agents/`, but the review workflows on this branch are driven by the shared workflow files above.
 
 Note: consumers compile against remote refs. If an import points at `@main`, the referenced file must already exist on GitHub before consumer compile succeeds.
 

@@ -13,6 +13,7 @@ Provide a code review for the given pull request.
   - `create-pull-request-review-comment` for actionable inline findings on changed lines
   - `submit-pull-request-review` for the final review decision
   - `noop` when no action should be taken
+- Use cache-memory only for short-lived continuity and deduplication hints. Treat live PR state and current review threads as the source of truth.
 - Never post free-form issue comments or use any side channel for review output.
 - Respect the workflow safe-output limits. Prioritize the highest-signal unique findings and keep the inline review set within the configured maximum.
 
@@ -30,22 +31,35 @@ To do this, follow these steps precisely:
 
 Note: Do not skip solely because prior automated review comments exist. Use prior comments for deduplication and stale-thread cleanup instead.
 
-3. Launch a fast subagent to return a list of file paths (not their contents) for all relevant `CLAUDE.md` files including:
+3. Read any prior review memory for this PR from cache-memory before you start detailed analysis.
+
+   Use a PR-specific file such as:
+   - `/tmp/gh-aw/cache-memory/pr-${PR_NUMBER}.json`
+
+   If a prior memory file exists, use it only as a hint for:
+   - Previously reported issues
+   - Dedupe patterns
+   - Prior review timestamps
+   - Risk areas worth re-checking
+
+   Do not trust cache-memory over current GitHub state. If memory conflicts with the live PR, changed files, or review threads, trust the live PR and ignore stale memory.
+
+4. Launch a fast subagent to return a list of file paths (not their contents) for all relevant `CLAUDE.md` files including:
    - The root CLAUDE.md file, if it exists
    - Any CLAUDE.md files in directories containing files modified by the pull request
 
-4. Launch a subagent to summarize:
+5. Launch a subagent to summarize:
    - The PR title and description
    - The changed files
    - The main behavioral changes in the diff
    - Any obvious risk areas worth checking carefully
 
-5. Fetch existing review comments on the PR before preparing any new findings. Use them to identify:
+6. Fetch existing review comments on the PR before preparing any new findings. Use them to identify:
    - Similar issues already flagged
    - Threads where a human already acknowledged the feedback
    - Comments on code that has changed since the earlier review and may now be stale
 
-6. Launch 4 review subagents in parallel. Each agent should return a list of candidate issues, where each issue includes:
+7. Launch 4 review subagents in parallel. Each agent should return a list of candidate issues, where each issue includes:
    - A concise description
    - The reason it was flagged (for example `CLAUDE.md adherence` or `bug`)
    - The changed file path
@@ -76,7 +90,7 @@ Note: Do not skip solely because prior automated review comments exist. Use prio
 
    Each review subagent should receive the PR title and description so it can evaluate intent.
 
-7. For each candidate issue, launch validation subagents in parallel. Each validator should receive the PR title, description, issue description, affected file, and affected hunk. The validator must confirm that the issue is real with high confidence.
+8. For each candidate issue, launch validation subagents in parallel. Each validator should receive the PR title, description, issue description, affected file, and affected hunk. The validator must confirm that the issue is real with high confidence.
 
    For bug and logic issues, verify the changed code actually causes the stated problem.
 
@@ -84,32 +98,39 @@ Note: Do not skip solely because prior automated review comments exist. Use prio
    - The cited rule exists
    - The rule applies to that file path and is actually violated
 
-8. Filter out any issue that fails validation.
+9. Filter out any issue that fails validation.
 
-9. Deduplicate and prune the validated issue list. Remove:
+10. Deduplicate and prune the validated issue list. Remove:
    - Issues already covered by an existing review comment
    - Issues in threads where a human has already acknowledged the feedback
    - Issues that were present in an earlier revision but are fixed in the latest code
    - Duplicate findings reported by multiple subagents
    - Findings that are not on changed lines or cannot be tied to a changed hunk
+   - Findings that only came from cache-memory and are not confirmed by the current PR state
 
-10. Classify the remaining issues:
+11. Classify the remaining issues:
    - `Blocking`: correctness, security, regression, data loss, or clear required-rule violations
    - `Non-blocking`: actionable but not merge-blocking concerns
 
-11. Produce a short internal summary of findings for yourself:
+12. Produce a short internal summary of findings for yourself:
    - If issues remain, list the highest-signal ones first
    - If no issues remain, summarize that no actionable high-signal issues were found
 
-12. If no actionable issues remain, submit exactly one final review with `submit-pull-request-review`:
+13. If no actionable issues remain, submit exactly one final review with `submit-pull-request-review`:
    - Use `APPROVE`
    - Briefly state that no issues were found after checking for bugs and `CLAUDE.md` compliance
    - Do not create inline comments
-   - Stop after the final review is submitted
+   - Before stopping, write a compact review memory file for this PR containing:
+     - review timestamp
+     - PR number
+     - files reviewed
+     - summary of what was checked
+     - `issues_reported: []`
+   - Stop after the final review is submitted and memory is updated
 
-13. If actionable issues remain, choose the highest-signal unique issues up to the safe-output comment limit. Create a list of planned inline comments for yourself before posting anything.
+14. If actionable issues remain, choose the highest-signal unique issues up to the safe-output comment limit. Create a list of planned inline comments for yourself before posting anything.
 
-14. Post one inline comment per chosen issue using `create-pull-request-review-comment`. For each comment:
+15. Post one inline comment per chosen issue using `create-pull-request-review-comment`. For each comment:
    - Provide a brief description of the issue
    - Explain why it matters
    - Reference the exact changed line
@@ -117,11 +138,20 @@ Note: Do not skip solely because prior automated review comments exist. Use prio
    - Keep the comment concise and actionable
    - Do not post duplicate comments for the same issue
 
-15. Submit exactly one final review using `submit-pull-request-review`:
+16. Submit exactly one final review using `submit-pull-request-review`:
    - Use `REQUEST_CHANGES` when at least one blocking issue remains
    - Use `APPROVE` otherwise, including when only non-blocking inline comments were left
    - Do not use `COMMENT` as the final review state
    - Keep the summary short and aligned with the issues you posted
+
+17. After the final review is submitted, update the PR-specific cache-memory file with a compact record of this review. Store only short-lived operational state such as:
+   - review timestamp
+   - PR number
+   - files reviewed
+   - issue fingerprints or short summaries
+   - whether the final review was `APPROVE` or `REQUEST_CHANGES`
+
+   Do not store secrets, tokens, personal data, or large blobs. Keep the file concise so future runs can use it for continuity and dedupe.
 
 Use this list when evaluating issues in Steps 4 and 5 (these are false positives, do NOT flag):
 
@@ -137,6 +167,7 @@ Notes:
 - Use GitHub tools for all repository reads. Do not use web fetch.
 - Always operate on the workflow PR target rather than guessing from local git state.
 - Inline comments should only be created for actionable issues on changed lines.
+- Cache-memory is best-effort and may be missing or stale. Use it to improve continuity, never to override current repository state.
 - When linking to code in an inline comment, use a full GitHub blob URL with a full SHA and a line range, for example: https://github.com/anthropics/claude-code/blob/c21d3c10bc8e898b7ac1a2d745bdc9bc4e423afe/package.json#L10-L15
   - Requires full git sha
   - Do not use shell substitution in the URL
