@@ -8,6 +8,10 @@ Shared internal GitHub Agentic Workflow templates for Pulumi Labs.
 - `.github/workflows/gh-aw-pr-rereview.md`
 - `.github/workflows/shared/review.md`
 - `.github/workflows/shared/plugins/code-review/code-review.md`
+- `workflows/gh-aw-pr-review.md`
+- `workflows/gh-aw-pr-rereview.md`
+- `workflows/shared/review.md`
+- `workflows/shared/plugins/code-review/code-review.md`
 - `mise.toml` (pinned `gh-aw` tooling for local use)
 
 The review workflows import the shared review contract from:
@@ -17,6 +21,8 @@ The review workflows import the shared review contract from:
 That shared workflow, in turn, imports the detailed reviewer prompt from:
 
 `shared/plugins/code-review/code-review.md`
+
+The top-level `workflows/` and `workflows/shared/` trees are packaging/export entrypoints for `gh aw add owner/repo/workflow-name@ref`. The `.github/workflows/` tree remains the in-repo authoring path and is kept for backward compatibility with existing consumers that already track the old source location.
 
 ## Local Tooling (mise)
 
