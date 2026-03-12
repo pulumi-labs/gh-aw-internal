@@ -8,10 +8,6 @@ Shared internal GitHub Agentic Workflow templates for Pulumi Labs.
 - `.github/workflows/gh-aw-pr-rereview.md`
 - `.github/workflows/shared/review.md`
 - `.github/workflows/shared/plugins/code-review/code-review.md`
-- `workflows/gh-aw-pr-review.md`
-- `workflows/gh-aw-pr-rereview.md`
-- `workflows/shared/review.md`
-- `workflows/shared/plugins/code-review/code-review.md`
 - `mise.toml` (pinned `gh-aw` tooling for local use)
 
 The review workflows import the shared review contract from:
@@ -21,8 +17,6 @@ The review workflows import the shared review contract from:
 That shared workflow, in turn, imports the detailed reviewer prompt from:
 
 `shared/plugins/code-review/code-review.md`
-
-The top-level `workflows/` and `workflows/shared/` trees are packaging/export entrypoints for `gh aw add owner/repo/workflow-name@ref`. The `.github/workflows/` tree remains the in-repo authoring path and is kept for backward compatibility with existing consumers that already track the old source location.
 
 ## Local Tooling (mise)
 
@@ -54,8 +48,8 @@ gh-aw init
 2. Add workflows from this repo:
 
 ```bash
-gh-aw add pulumi-labs/gh-aw-internal/gh-aw-pr-review@main
-gh-aw add pulumi-labs/gh-aw-internal/gh-aw-pr-rereview@main
+gh-aw add pulumi-labs/gh-aw-internal/.github/workflows/gh-aw-pr-review.md@main
+gh-aw add pulumi-labs/gh-aw-internal/.github/workflows/gh-aw-pr-rereview.md@main
 ```
 
 3. Compile and commit:
@@ -94,6 +88,13 @@ Typical workflow when changing review behavior:
 Legacy helper files may still exist in `.github/snippets/` or `.github/agents/`, but the review workflows on this branch are driven by the shared workflow files above.
 
 Note: consumers compile against remote refs. If an import points at `@main`, the referenced file must already exist on GitHub before consumer compile succeeds.
+
+## Adding Future Workflows
+
+- If the workflow should run in this repo, add it under `.github/workflows/`.
+- If the change is a reusable component or prompt fragment, add it under `.github/workflows/shared/`.
+- If the workflow is only a building block with no trigger of its own, keep it as a shared file without an `on:` field.
+- If a future standalone workflow should be installable by other repos but should not run in this repo, do not add it as a normal top-level workflow here without first deciding on a packaging strategy. This repo currently treats `.github/workflows/` as the canonical in-repo runtime location.
 
 ## Versioning Strategy
 
