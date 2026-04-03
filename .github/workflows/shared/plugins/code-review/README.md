@@ -48,6 +48,7 @@ The upstream prompt was changed in these ways:
 - Added validation steps before posting findings.
 - Added `cache-memory` guidance for short-lived PR review continuity.
 - Kept live PR state and current review threads as the source of truth.
+- Tightened review output to prefer terse, issue-only approvals and to avoid repeating inline comments in the final review.
 
 ## Sync Notes
 
@@ -86,4 +87,5 @@ local_adaptations:
   - preserve high-signal multi-agent review structure
   - add review-comment deduplication guidance
   - add cache-memory continuity guidance
+  - prefer terse issue-only review output with no inline-summary duplication
 ```

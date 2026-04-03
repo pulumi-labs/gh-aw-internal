@@ -8,7 +8,7 @@ permissions:
   id-token: write
 on:
   pull_request:
-    types: [opened]
+    types: [opened, ready_for_review]
   workflow_dispatch:
     inputs:
       pr_number:

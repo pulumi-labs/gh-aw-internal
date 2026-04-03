@@ -28,12 +28,15 @@ steps:
 tools:
   cache-memory: true
   github:
-    lockdown: false
     toolsets: [pull_requests, repos]
 safe-outputs:
   create-pull-request-review-comment:
     max: 12
     side: "RIGHT"
+    target: "${{ github.event.pull_request.number || github.event.inputs.pr_number || github.event.issue.number }}"
+    target-repo: "${{ github.repository }}"
+  resolve-pull-request-review-thread:
+    max: 12
     target: "${{ github.event.pull_request.number || github.event.inputs.pr_number || github.event.issue.number }}"
     target-repo: "${{ github.repository }}"
   submit-pull-request-review:
@@ -56,6 +59,7 @@ Workflow-specific rules:
 - Treat the imported review prompt as the source of the review procedure.
 - Use only gh-aw safe outputs for side effects:
   - `create-pull-request-review-comment` for actionable inline findings on changed lines
+  - `resolve-pull-request-review-thread` for previously reported bot-authored threads that are now fixed or clearly acknowledged
   - `submit-pull-request-review` for the final review
   - `noop` when the PR is not reviewable or required context is missing
 - Submit exactly one final review:
