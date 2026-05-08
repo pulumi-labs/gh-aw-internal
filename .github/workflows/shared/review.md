@@ -41,7 +41,6 @@ safe-outputs:
     target-repo: "${{ github.repository }}"
   submit-pull-request-review:
     max: 1
-    allowed-events: [APPROVE, REQUEST_CHANGES]
     target: "${{ github.event.pull_request.number || github.event.inputs.pr_number || github.event.issue.number }}"
   noop:
     max: 1
