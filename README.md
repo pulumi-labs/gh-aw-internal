@@ -85,7 +85,7 @@ Typical workflow when changing review behavior:
 3. Recompile the workflow lock files.
 4. Update consumers via `gh-aw update`.
 
-Legacy helper files may still exist in `.github/snippets/` or `.github/agents/`, but the review workflows on this branch are driven by the shared workflow files above.
+The shared workflow files above are the only source of truth for review behavior. Do not add parallel prompt copies under `.github/snippets/` or `.github/agents/`.
 
 For installable top-level workflows, prefer explicitly listing every required shared import in the top-level workflow's `imports:` block. Do not rely on recursive import fetching in consumer repos for critical prompt dependencies.
 
