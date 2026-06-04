@@ -143,7 +143,7 @@ Note: Do not skip solely because prior automated review comments exist. Use prio
    - Issues in threads where a human has already acknowledged the feedback
    - Issues that were present in an earlier revision but are fixed in the latest code
    - Duplicate findings reported by multiple subagents
-   - Findings that are not on changed lines or cannot be tied to a changed hunk
+   - Findings that are not on changed lines, are outside the PR diff hunks, or cannot be tied to a changed hunk
    - Findings that only came from cache-memory and are not confirmed by the current PR state
 
    **Re-review filters (apply only if prior bot activity was found in step 6):**
@@ -188,6 +188,12 @@ Note: Do not skip solely because prior automated review comments exist. Use prio
 
    Prefer zero comments over low-signal comments. Pre-existing comments should be rare.
 
+   Before posting, preflight every planned inline comment against the PR patch from GitHub (`get_pull_request_files` patch data or `get_pull_request_diff`), not against the local file alone:
+   - The workflow config posts review comments on the `RIGHT` side, so the target line must be a current-file line that appears inside a GitHub diff hunk for that file.
+   - Context lines inside a diff hunk are reviewable. Unchanged lines elsewhere in the current file are not reviewable, even if the line number exists at HEAD.
+   - If a finding is real but its best target line is outside the diff hunks, do not call `create-pull-request-review-comment` for it. Drop it unless it is an `Important` issue that is clearly relevant to the PR; in that case, mention it briefly in the final review body with `file:line` text instead of forcing an invalid inline comment.
+   - Do not retarget a comment to a nearby changed line unless that changed line is itself where the author needs to act and the comment will be accurate at that location.
+
 16. Post one inline comment per chosen issue using `create-pull-request-review-comment`. Use this exact template for the comment body (plain-text severity label, no emoji):
 
    ```
@@ -215,7 +221,7 @@ Note: Do not skip solely because prior automated review comments exist. Use prio
 
    - For larger fixes, describe the change without a suggestion block.
    - Omit the `<details>` block entirely when it would only restate the description.
-   - Reference the exact changed line.
+   - Reference the exact GitHub-reviewable changed line.
    - Cite the relevant `CLAUDE.md` rule when applicable.
    - Do not post comments that merely suggest optional follow-up cleanup or extra documentation.
    - Do not post comments whose conclusion is that the code is acceptable as-is.
@@ -277,7 +283,7 @@ Notes:
 
 - Use GitHub tools for all repository reads. Do not use web fetch.
 - Always operate on the workflow PR target rather than guessing from local git state.
-- Inline comments should only be created for actionable issues on changed lines.
+- Inline comments should only be created for actionable issues on GitHub-reviewable lines inside the PR diff hunks. Local file line existence is not enough.
 - If you leave inline comments, the final review should not repeat them.
 - Cache-memory is best-effort and may be missing or stale. Use it to improve continuity, never to override current repository state.
 - When linking to code in an inline comment, use a full GitHub blob URL with a full SHA and a line range, for example: https://github.com/anthropics/claude-code/blob/c21d3c10bc8e898b7ac1a2d745bdc9bc4e423afe/package.json#L10-L15
